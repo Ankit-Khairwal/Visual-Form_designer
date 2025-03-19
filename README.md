@@ -28,11 +28,11 @@ A drag-and-drop form designer built with Vanilla JavaScript that allows users to
 
 2. Navigate to the project directory:
    ```
-   cd form-designer
+   cd Visual-Form_designer
    ```
 
 3. Open `index.html` in your browser:
-   - You can use a local server like [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) for VS Code
+   - You can use a local server like [Live Server](https://visual-form-designer.vercel.app/) 
    - Or simply open the HTML file in your browser
 
 ### Usage
