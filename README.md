@@ -32,7 +32,7 @@ A drag-and-drop form designer built with Vanilla JavaScript that allows users to
    ```
 
 3. Open `index.html` in your browser:
-   - You can use a local server like [Live Server](https://visual-form-designer.vercel.app/) 
+   - I use vercel for hosting  [Live Server](https://visual-form-designer.vercel.app/) 
    - Or simply open the HTML file in your browser
 
 ### Usage
