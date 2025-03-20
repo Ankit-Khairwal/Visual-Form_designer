@@ -19,17 +19,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeDataButton = document.getElementById("close-data");
   const jsonDisplay = document.getElementById("json-display");
 
-  // Current element being edited
   let currentEditElement = null;
 
-  // Initialize theme
   function initTheme() {
     const savedTheme = localStorage.getItem("theme") || "light";
     document.documentElement.setAttribute("data-theme", savedTheme);
     updateThemeIcon(savedTheme);
   }
 
-  // Toggle theme
   function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute("data-theme");
     const newTheme = currentTheme === "light" ? "dark" : "light";
@@ -43,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  // Update theme icon
   function updateThemeIcon(theme) {
     const themeIcon = themeToggle.querySelector("i");
 
@@ -56,12 +52,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Initialize Sortable for drag-and-drop functionality
   const sortable = new Sortable(formElementsContainer, {
     animation: 150,
     ghostClass: "sortable-ghost",
     onEnd: function (evt) {
-      // Update the formData array after reordering
       const newIndex = evt.newIndex;
       const oldIndex = evt.oldIndex;
 
@@ -71,8 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     },
   });
-
-  // Generate UUID for unique IDs
   function generateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
@@ -84,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  // Check if form is empty and toggle empty state
   function toggleEmptyState() {
     if (formData.length === 0) {
       emptyState.style.display = "flex";
@@ -93,23 +84,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Render the form elements based on formData
   function renderFormElements() {
     try {
-      // Clear all child elements except the empty state
       const elements = formElementsContainer.querySelectorAll(".form-element");
       elements.forEach((el) => el.remove());
 
       toggleEmptyState();
 
       if (!Array.isArray(formData) || formData.length === 0) {
-        return; // Exit if no data to render
+        return;
       }
 
       formData.forEach((element) => {
         if (!element || !element.type || !element.id) {
           console.warn("Invalid form element:", element);
-          return; // Skip invalid elements
+          return;
         }
 
         const templateId = `${element.type}-template`;
@@ -117,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!template) {
           console.warn(`Template not found for type: ${element.type}`);
-          return; // Skip if template not found
+          return;
         }
 
         const clone = document.importNode(template.content, true);
@@ -136,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
             input.value = element.value || "";
             input.addEventListener("input", (e) => {
               element.value = e.target.value;
-              saveForm(); // Auto-save when input changes
+              saveForm();
             });
           }
         } else if (element.type === "textarea") {
@@ -146,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
             textarea.value = element.value || "";
             textarea.addEventListener("input", (e) => {
               element.value = e.target.value;
-              saveForm(); // Auto-save when input changes
+              saveForm();
             });
           }
         } else if (element.type === "select") {
@@ -167,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             select.addEventListener("change", (e) => {
               element.value = e.target.value;
-              saveForm(); // Auto-save when selection changes
+              saveForm();
             });
           }
         } else if (element.type === "checkbox") {
@@ -181,12 +170,11 @@ document.addEventListener("DOMContentLoaded", function () {
             checkbox.checked = element.checked || false;
             checkbox.addEventListener("change", (e) => {
               element.checked = e.target.checked;
-              saveForm(); // Auto-save when checkbox changes
+              saveForm();
             });
           }
         }
 
-        // Setup edit and delete event handlers
         const editButton = clone.querySelector(".edit-btn");
         const deleteButton = clone.querySelector(".delete-btn");
 
@@ -210,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Add a new form element
   function addFormElement(type) {
     const newElement = {
       id: generateUUID(),
@@ -227,7 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.push(newElement);
     renderFormElements();
 
-    // Add a small animation to highlight the new element
     const newElementEl = formElementsContainer.querySelector(
       `[data-id="${newElement.id}"]`
     );
@@ -237,20 +223,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 1000);
   }
 
-  // Delete a form element
   function deleteElement(elementId) {
-    // Find the element to be deleted
     const elementIndex = formData.findIndex(
       (element) => element.id === elementId
     );
     if (elementIndex !== -1) {
-      // Add a fade-out animation
       const elementEl = formElementsContainer.querySelector(
         `[data-id="${elementId}"]`
       );
       elementEl.classList.add("fade-out");
 
-      // Wait for animation to complete before removing from DOM
       setTimeout(() => {
         formData = formData.filter((element) => element.id !== elementId);
         renderFormElements();
@@ -258,7 +240,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Open the edit modal for a form element
   function openEditModal(element) {
     currentEditElement = element;
 
@@ -312,7 +293,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     editFormContainer.innerHTML = modalContent;
 
-    // Setup event handlers for select options
     if (element.type === "select") {
       const addOptionBtn = editFormContainer.querySelector(".add-option-btn");
       addOptionBtn.addEventListener("click", addSelectOption);
@@ -324,14 +304,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Animate the modal
     editModal.style.display = "block";
     setTimeout(() => {
       editModal.querySelector(".modal-content").classList.add("show-modal");
     }, 10);
   }
 
-  // Close the edit modal
   function closeEditModal() {
     const modalContent = editModal.querySelector(".modal-content");
     modalContent.classList.remove("show-modal");
@@ -343,7 +321,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 300);
   }
 
-  // Add a new select option
   function addSelectOption() {
     const selectOptions = editFormContainer.querySelector(".select-options");
     const optionIndex = selectOptions.children.length;
@@ -360,25 +337,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const removeBtn = optionItem.querySelector(".remove-option-btn");
     removeBtn.addEventListener("click", removeSelectOption);
 
-    // Add a small animation
     optionItem.classList.add("highlight-new");
     setTimeout(() => {
       optionItem.classList.remove("highlight-new");
     }, 1000);
   }
 
-  // Remove a select option
   function removeSelectOption(event) {
     const index = event.target.dataset.index;
     const optionItem = event.target.closest(".option-item");
 
-    // Add a fade-out animation
     optionItem.classList.add("fade-out");
 
     setTimeout(() => {
       optionItem.remove();
 
-      // Update indexes for remaining options
       const optionItems = editFormContainer.querySelectorAll(".option-item");
       optionItems.forEach((item, idx) => {
         const input = item.querySelector(".option-value");
@@ -390,7 +363,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 300);
   }
 
-  // Update the current element being edited
   function updateElement() {
     if (!currentEditElement) return;
 
@@ -418,16 +390,14 @@ document.addEventListener("DOMContentLoaded", function () {
     renderFormElements();
     closeEditModal();
 
-    // Show a success notification
     showNotification("Element updated successfully!");
   }
 
-  // Save the form
   function saveForm() {
     try {
       const jsonData = JSON.stringify(formData, null, 2);
       localStorage.setItem("formData", jsonData);
-      console.log("Form data saved:", jsonData); // Debug log
+      console.log("Form data saved:", jsonData);
       showNotification("Form saved successfully!");
     } catch (error) {
       console.error("Error saving form data:", error);
@@ -435,9 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Show notification
   function showNotification(message) {
-    // Check if notification already exists
     let notification = document.querySelector(".notification");
 
     if (!notification) {
@@ -454,28 +422,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
   }
 
-  // Load saved form data if available
   function loadSavedFormData() {
     const savedData = localStorage.getItem("formData");
-    console.log("Saved form data:", savedData); // Debug log
+    console.log("Saved form data:", savedData);
 
     if (savedData && savedData.trim() !== "") {
       try {
         const parsedData = JSON.parse(savedData);
-        console.log("Parsed form data:", parsedData); // Debug log
+        console.log("Parsed form data:", parsedData);
 
         if (Array.isArray(parsedData) && parsedData.length > 0) {
           formData = parsedData;
           renderFormElements();
         } else {
-          // If saved data is empty array or not an array
           console.log("Saved data is empty or invalid");
           formData = [];
           toggleEmptyState();
         }
       } catch (error) {
         console.error("Error parsing saved form data:", error);
-        // Reset form data on error
+
         formData = [];
         localStorage.removeItem("formData");
         toggleEmptyState();
@@ -487,18 +453,14 @@ document.addEventListener("DOMContentLoaded", function () {
       toggleEmptyState();
     }
   }
-
-  // Show the data modal with current form data
   function showDataModal() {
     try {
-      // Create a more readable format of the data
       const displayData = formData.map((element) => {
         const cleanElement = {
           type: element.type,
           label: element.label,
         };
 
-        // Add specific properties based on element type
         if (element.type === "input" || element.type === "textarea") {
           cleanElement.placeholder = element.placeholder;
           cleanElement.value = element.value || "";
@@ -514,7 +476,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const formattedData = JSON.stringify(displayData, null, 2);
 
-      // Add syntax highlighting with proper escaping
       const highlightedData = formattedData
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -526,7 +487,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       jsonDisplay.innerHTML = highlightedData;
 
-      // Show the modal with animation
       dataModal.style.display = "block";
       setTimeout(() => {
         dataModal.querySelector(".modal-content").classList.add("show-modal");
@@ -537,7 +497,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Close the data modal
   function closeDataModal() {
     const modalContent = dataModal.querySelector(".modal-content");
     modalContent.classList.remove("show-modal");
@@ -576,7 +535,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Clear all form data
   function clearFormData() {
     if (
       confirm(
@@ -590,7 +548,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Event Listeners
   themeToggle.addEventListener("click", toggleTheme);
   showDataButton.addEventListener("click", showDataModal);
   clearDataButton.addEventListener("click", clearFormData);
@@ -610,7 +567,6 @@ document.addEventListener("DOMContentLoaded", function () {
   updateElementButton.addEventListener("click", updateElement);
   cancelEditButton.addEventListener("click", closeEditModal);
 
-  // Close modals when clicking outside
   window.addEventListener("click", (event) => {
     if (event.target === editModal) {
       closeEditModal();
@@ -620,7 +576,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Initialize the form and theme
   initTheme();
   loadSavedFormData();
 });

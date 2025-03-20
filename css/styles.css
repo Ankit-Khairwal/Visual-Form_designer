@@ -5,7 +5,6 @@
 }
 
 :root {
-  /* Modern color palette */
   --primary: #6366f1;
   --primary-dark: #4f46e5;
   --success: #22c55e;
@@ -23,7 +22,6 @@
   --transition: all 0.3s ease;
 }
 
-/* Dark theme variables */
 [data-theme="dark"] {
   --primary: #818cf8;
   --primary-dark: #6366f1;
@@ -525,7 +523,6 @@ select:focus {
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .designer-container {
     grid-template-columns: 1fr;
@@ -558,13 +555,11 @@ select:focus {
   }
 }
 
-/* Ensure form elements don't overflow */
 textarea {
   min-height: 100px;
   resize: vertical;
 }
 
-/* Custom scrollbar for all scrollable areas */
 .form-elements-container::-webkit-scrollbar,
 .toolbar::-webkit-scrollbar,
 .modal-content::-webkit-scrollbar {
